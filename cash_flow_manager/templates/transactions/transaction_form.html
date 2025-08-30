@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1>
+        {% if form.instance.pk %}Редактировать транзакцию{% else %}Добавить транзакцию{% endif %}
+    </h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Дата -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.date.label }}</label>
+            {{ form.date }}
+            {% for error in form.date.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <!-- Статус -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.status.label }}</label>
+            {{ form.status }}
+            {% for error in form.status.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Тип -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.type.label }}</label>
+            <select name="type" id="type-select">
+                <option value="">---------</option>
+                {% for type in form.fields.type.queryset %}
+                    <option value="{{ type.id }}"
+                        {% if form.instance.type and form.instance.type.id == type.id %}selected{% endif %}>
+                        {{ type.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% for error in form.type.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Категория -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.category.label }}</label>
+            <select name="category" id="category-select">
+                <option value="">---------</option>
+                {% for cat in form.fields.category.queryset %}
+                    <option value="{{ cat.id }}"
+                        {% if form.instance.category and form.instance.category.id == cat.id %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% for error in form.category.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Подкатегория -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.subcategory.label }}</label>
+            <select name="subcategory" id="subcategory-select">
+                <option value="">---------</option>
+                {% for subcat in form.fields.subcategory.queryset %}
+                    <option value="{{ cat.id }}"
+                        {% if form.instance.subcategory and form.instance.subcategory.id == subcat.id %}selected{% endif %}>
+                        {{ subcat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% for error in form.subcategory.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Сумма -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.amount.label }}</label>
+            {{ form.amount }}
+            {% for error in form.amount.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Комментарий -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.comment.label }}</label>
+            {{ form.comment }}
+            {% for error in form.comment.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $("#type-select").change(function() {
+        var url = "{% url 'ajax_load_categories' %}";
+        var typeId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'type': typeId
+            },
+            success: function(data) {
+                $("#category-select").html('<option value="">---------</option>');
+                $("#subcategory-select").html('<option value="">---------</option>');
+                $.each(data, function(key, value) {
+                    $("#category-select").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $("#category-select").change(function() {
+        var url = "{% url 'ajax_load_subcategories' %}";
+        var categoryId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'category': categoryId
+            },
+            success: function(data) {
+                $("#subcategory-select").html('<option value="">---------</option>');
+                $.each(data, function(key, value) {
+                    $("#subcategory-select").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock content %}
