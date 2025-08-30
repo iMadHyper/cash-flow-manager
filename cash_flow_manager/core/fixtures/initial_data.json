@@ -1,60 +1,153 @@
 [
-  {
+{
     "model": "core.status",
     "pk": 1,
-    "fields": { "name": "Бизнес" }
-  },
-  {
+    "fields": {
+        "name": "Бизнес"
+    }
+},
+{
     "model": "core.status",
     "pk": 2,
-    "fields": { "name": "Личное" }
-  },
-  {
+    "fields": {
+        "name": "Личное"
+    }
+},
+{
     "model": "core.status",
     "pk": 3,
-    "fields": { "name": "Налог" }
-  },
-
-  {
+    "fields": {
+        "name": "Налог"
+    }
+},
+{
     "model": "core.transactiontype",
     "pk": 1,
-    "fields": { "name": "Пополнение" }
-  },
-  {
+    "fields": {
+        "name": "Пополнение"
+    }
+},
+{
     "model": "core.transactiontype",
     "pk": 2,
-    "fields": { "name": "Списание" }
-  },
-
-  {
+    "fields": {
+        "name": "Списание"
+    }
+},
+{
     "model": "core.category",
     "pk": 1,
-    "fields": { "name": "Инфраструктура", "type": 2 }
-  },
-  {
+    "fields": {
+        "name": "Инфраструктура",
+        "type": 2
+    }
+},
+{
     "model": "core.category",
     "pk": 2,
-    "fields": { "name": "Маркетинг", "type": 2 }
-  },
-
-  {
+    "fields": {
+        "name": "Маркетинг",
+        "type": 2
+    }
+},
+{
+    "model": "core.category",
+    "pk": 3,
+    "fields": {
+        "name": "Обслуживание",
+        "type": 1
+    }
+},
+{
     "model": "core.subcategory",
     "pk": 1,
-    "fields": { "name": "VPS", "category": 1 }
-  },
-  {
+    "fields": {
+        "name": "VPS",
+        "category": 1
+    }
+},
+{
     "model": "core.subcategory",
     "pk": 2,
-    "fields": { "name": "Proxy", "category": 1 }
-  },
-  {
+    "fields": {
+        "name": "Proxy",
+        "category": 1
+    }
+},
+{
     "model": "core.subcategory",
     "pk": 3,
-    "fields": { "name": "Farpost", "category": 2 }
-  },
-  {
+    "fields": {
+        "name": "Farpost",
+        "category": 2
+    }
+},
+{
     "model": "core.subcategory",
     "pk": 4,
-    "fields": { "name": "Avito", "category": 2 }
-  }
+    "fields": {
+        "name": "Avito",
+        "category": 2
+    }
+},
+{
+    "model": "core.subcategory",
+    "pk": 5,
+    "fields": {
+        "name": "Стрижка",
+        "category": 3
+    }
+},
+{
+    "model": "core.transaction",
+    "pk": 2,
+    "fields": {
+        "date": "2025-08-30",
+        "status": 2,
+        "type": 2,
+        "category": 1,
+        "subcategory": 2,
+        "amount": "1234.00",
+        "comment": ""
+    }
+},
+{
+    "model": "core.transaction",
+    "pk": 3,
+    "fields": {
+        "date": "2025-08-31",
+        "status": 2,
+        "type": 2,
+        "category": 2,
+        "subcategory": 4,
+        "amount": "1250.00",
+        "comment": ""
+    }
+},
+{
+    "model": "core.transaction",
+    "pk": 4,
+    "fields": {
+        "date": "2025-08-30",
+        "status": 3,
+        "type": 2,
+        "category": 2,
+        "subcategory": 4,
+        "amount": "1000.00",
+        "comment": "asdasdasd"
+    }
+},
+{
+    "model": "core.transaction",
+    "pk": 5,
+    "fields": {
+        "date": "2025-08-30",
+        "status": 1,
+        "type": 1,
+        "category": 3,
+        "subcategory": 5,
+        "amount": "1000.00",
+        "comment": ""
+    }
+}
 ]
