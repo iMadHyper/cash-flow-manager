@@ -5,6 +5,61 @@
     <h1>Транзакции</h1>
     <a href="{% url 'transaction_add' %}" class="btn btn-success mb-3">Добавить транзакцию</a>
 
+    <form method="get" class="mb-3 row g-2">
+        <div class="col-auto">
+            <input type="date" name="date_from" class="form-control" placeholder="С даты"
+                value="{{ filter_values.date_from }}">
+        </div>
+        <div class="col-auto">
+            <input type="date" name="date_to" class="form-control" placeholder="По дату"
+                value="{{ filter_values.date_to }}">
+        </div>
+        <div class="col-auto">
+            <select name="status" class="form-select">
+                <option value="">Статус</option>
+                {% for status in statuses %}
+                <option value="{{ status.id }}" {% if filter_values.status  == status.id|stringformat:"s" %}selected{% endif %}>
+                    {{ status.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="type" class="form-select" id="type-select">
+                <option value="">Тип</option>
+                {% for t in types %}
+                <option value="{{ t.id }}" {% if filter_values.type ==  t.id|stringformat:"s" %}selected{% endif %}>
+                    {{ t.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="category" class="form-select" id="category-select">
+                <option value="">Категория</option>
+                {% for c in categories %}
+                <option value="{{ c.id }}" {% if filter_values.category == c.id|stringformat:"s" %}selected{% endif %}>
+                    {{ c.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="subcategory" class="form-select" id="subcategory-select">
+                <option value="">Подкатегория</option>
+                {% for sc in subcategories %}
+                <option value="{{ sc.id }}" {% if filter_values.subcategory == sc.id|stringformat:"s" %}selected{% endif %}>
+                    {{ sc.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Применить фильтр</button>
+            <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </form>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -20,32 +75,75 @@
         </thead>
         <tbody>
             {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.date }}</td>
-                    <td>{{ transaction.status.name }}</td>
-                    <td>{{ transaction.type.name }}</td>
-                    <td>{{ transaction.category.name }}</td>
-                    <td>{{ transaction.subcategory.name }}</td>
-                    <td>{{ transaction.amount }}</td>
-                    <td>{{ transaction.comment }}</td>
-                    <td>
-                        <a href="{% url 'transaction_edit' transaction.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
-                        <form action="{% url 'transaction_delete' transaction.pk %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить транзакцию?');">Удалить</button>
-                        </form>
-                    </td>
-                </tr>
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.status.name }}</td>
+                <td>{{ transaction.type.name }}</td>
+                <td>{{ transaction.category.name }}</td>
+                <td>{{ transaction.subcategory.name }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.comment }}</td>
+                <td>
+                    <a href="{% url 'transaction_edit' transaction.pk %}"
+                        class="btn btn-sm btn-primary">Редактировать</a>
+                    <form action="{% url 'transaction_delete' transaction.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Удалить транзакцию?');">Удалить</button>
+                    </form>
+                </td>
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="8" class="text-center">
-                        Нет транзакций
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="8" class="text-center">
+                    Нет транзакций
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $("#type-select").change(function() {
+        var url = "{% url 'ajax_load_categories' %}";
+        var typeId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'type': typeId
+            },
+            success: function(data) {
+                $("#category-select").html('<option value="">---------</option>');
+                $("#subcategory-select").html('<option value="">---------</option>');
+                $.each(data, function(key, value) {
+                    $("#category-select").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $("#category-select").change(function() {
+        var url = "{% url 'ajax_load_subcategories' %}";
+        var categoryId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'category': categoryId
+            },
+            success: function(data) {
+                $("#subcategory-select").html('<option value="">---------</option>');
+                $.each(data, function(key, value) {
+                    $("#subcategory-select").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>
 
 {% endblock content %}

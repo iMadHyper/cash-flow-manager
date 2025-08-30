@@ -17,7 +17,39 @@ from .forms import TransactionForm, TransactionTypeForm, StatusForm, CategoryFor
 class TransactionListView(View):
     def get(self, request):
         transactions = Transaction.objects.all().order_by('-date')
-        return render(request, 'transactions/transaction_list.html', {'transactions': transactions})
+        
+        # Фильтры
+        date_from = request.GET.get('date_from')
+        date_to = request.GET.get('date_to')
+        status_id = request.GET.get('status')
+        type_id = request.GET.get('type')
+        category_id = request.GET.get('category')
+        subcategory_id = request.GET.get('subcategory')
+
+        if date_from:
+            transactions = transactions.filter(date__gte=date_from)
+        if date_to:
+            transactions = transactions.filter(date__lte=date_to)
+        if status_id:
+            transactions = transactions.filter(status_id=status_id)
+        if type_id:
+            transactions = transactions.filter(type_id=type_id)
+        if category_id:
+            transactions = transactions.filter(category_id=category_id)
+        if subcategory_id:
+            transactions = transactions.filter(subcategory_id=subcategory_id)
+            
+        context = {
+            'transactions': transactions,
+            'statuses': Status.objects.all(),
+            'types': TransactionType.objects.all(),
+            'categories': Category.objects.all(),
+            'subcategories': Subcategory.objects.all(),
+            # Чтобы сохранялись выбранные значения в форме фильтра
+            'filter_values': request.GET,
+        }
+        
+        return render(request, 'transactions/transaction_list.html', context)
 
 
 class TransactionCreateView(View):
