@@ -116,8 +116,8 @@
                 'type': typeId
             },
             success: function(data) {
-                $("#category-select").html('<option value="">---------</option>');
-                $("#subcategory-select").html('<option value="">---------</option>');
+                $("#category-select").html('<option value="">Категория</option>');
+                $("#subcategory-select").html('<option value="">Подкатегория</option>');
                 $.each(data, function(key, value) {
                     $("#category-select").append('<option value="' + value.id + '">' + value.name + '</option>');
                 });
@@ -137,7 +137,7 @@
                 'category': categoryId
             },
             success: function(data) {
-                $("#subcategory-select").html('<option value="">---------</option>');
+                $("#subcategory-select").html('<option value="">Подкатегория</option>');
                 $.each(data, function(key, value) {
                     $("#subcategory-select").append('<option value="' + value.id + '">' + value.name + '</option>');
                 });
